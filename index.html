@@ -13,6 +13,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
     .card {
       background: #fff;
@@ -101,6 +102,7 @@
     <!-- Ad Box -->
     <div id="adBox">
       <p>🎬 Ad running... Please wait <span id="timer">10</span> seconds</p>
+      <button class="btn" id="backFromAd">🔙 Back</button>
     </div>
 
     <!-- Refer Box -->
@@ -112,6 +114,7 @@
       <p>অন্য কারো রেফার কোড দিন:</p>
       <input type="text" id="applyCode" placeholder="Enter refer code">
       <button class="btn" id="applyBtn">✅ Apply</button>
+      <button class="btn" id="backFromRefer">🔙 Back</button>
     </div>
 
     <!-- Withdraw Box -->
@@ -126,6 +129,7 @@
       <label>Account Number:</label>
       <input type="text" id="account" placeholder="Enter number">
       <button class="btn" id="confirmWithdraw">✅ Confirm Withdraw</button>
+      <button class="btn" id="backFromWithdraw">🔙 Back</button>
     </div>
   </div>
 
@@ -149,10 +153,21 @@
     const adBox = document.getElementById("adBox");
     const referBox = document.getElementById("referBox");
     const withdrawBox = document.getElementById("withdrawBox");
+    const mainButtons = document.querySelectorAll("#startEarn, #referEarn, #withdraw");
+
+    // Show main menu function
+    function showMain() {
+      adBox.style.display = "none";
+      referBox.style.display = "none";
+      withdrawBox.style.display = "none";
+      mainButtons.forEach(btn => btn.style.display = "block");
+    }
 
     // Start Earn button
     document.getElementById("startEarn").addEventListener("click", () => {
       adBox.style.display = "block";
+      mainButtons.forEach(btn => btn.style.display = "none");
+
       if (typeof show_9777736 === "function") show_9777736();
 
       let time = 10;
@@ -162,18 +177,19 @@
         timerEl.innerText = time;
         if (time <= 0) {
           clearInterval(countdown);
-          adBox.style.display = "none";
-          balance += 0.50;
-          balanceEl.innerText = balance.toFixed(2);
           tg.showAlert("🎉 আপনি ৳0.50 আয় করেছেন!");
+          balance += 0.5;
+          balanceEl.innerText = balance.toFixed(2);
+          showMain();
         }
       }, 1000);
     });
 
     // Refer button
     document.getElementById("referEarn").addEventListener("click", () => {
-      referBox.style.display = referBox.style.display === "none" ? "block" : "none";
+      referBox.style.display = "block";
       withdrawBox.style.display = "none";
+      mainButtons.forEach(btn => btn.style.display = "none");
     });
 
     document.getElementById("copyBtn").addEventListener("click", () => {
@@ -192,8 +208,9 @@
 
     // Withdraw button
     document.getElementById("withdraw").addEventListener("click", () => {
-      withdrawBox.style.display = withdrawBox.style.display === "none" ? "block" : "none";
+      withdrawBox.style.display = "block";
       referBox.style.display = "none";
+      mainButtons.forEach(btn => btn.style.display = "none");
     });
 
     document.getElementById("confirmWithdraw").addEventListener("click", () => {
@@ -210,7 +227,13 @@
       }
 
       tg.showAlert("✅ Withdraw request sent successfully!");
+      showMain();
     });
+
+    // Back buttons
+    document.getElementById("backFromAd").addEventListener("click", showMain);
+    document.getElementById("backFromRefer").addEventListener("click", showMain);
+    document.getElementById("backFromWithdraw").addEventListener("click", showMain);
   </script>
 </body>
 </html>
