@@ -97,19 +97,19 @@
                     </div>
                     <div class="space-y-3">
                         <div class="bg-orange-500 p-3 rounded-lg flex items-center justify-between text-black">
-                            <div class="flex items-center space-x-3"><span class="text-3xl">🤩</span><div><h3 class="font-bold">Watch Short Ad</h3><p class="text-xs font-medium">Rewarded Interstitial</p></div></div>
+                            <div class="flex items-center space-x-3"><span class="text-3xl">ðŸ¤©</span><div><h3 class="font-bold">Watch Short Ad</h3><p class="text-xs font-medium">Rewarded Interstitial</p></div></div>
                             <button class="bg-white text-orange-500 font-bold px-6 py-2 rounded-lg text-sm btn" onclick="claimReward('interstitial')">Claim</button>
                         </div>
                         <div class="card-bg p-3 rounded-lg flex items-center justify-between">
-                            <div class="flex items-center space-x-3"><span class="text-3xl">😎</span><div><h3 class="font-semibold">Click for Reward</h3><p class="text-xs text-gray-400">Rewarded Popup</p></div></div>
+                            <div class="flex items-center space-x-3"><span class="text-3xl">ðŸ˜Ž</span><div><h3 class="font-semibold">Click for Reward</h3><p class="text-xs text-gray-400">Rewarded Popup</p></div></div>
                             <button class="bg-white text-black font-bold px-6 py-2 rounded-lg text-sm btn" onclick="claimReward('popup')">Claim</button>
                         </div>
                          <div class="card-bg p-3 rounded-lg flex items-center justify-between">
-                            <div class="flex items-center space-x-3"><span class="text-3xl">👀</span><div><h3 class="font-semibold">Watch a Video</h3><p class="text-xs text-gray-400">In-App Interstitial</p></div></div>
+                            <div class="flex items-center space-x-3"><span class="text-3xl">ðŸ‘€</span><div><h3 class="font-semibold">Watch a Video</h3><p class="text-xs text-gray-400">In-App Interstitial</p></div></div>
                             <button class="bg-gray-700 text-white font-bold px-6 py-2 rounded-lg text-sm btn" onclick="claimReward('inApp')">Start</button>
                         </div>
                         <div class="card-bg p-3 rounded-lg flex items-center justify-between">
-                            <div class="flex items-center space-x-3"><span class="text-3xl">🎮</span><div><h3 class="font-semibold">Play Mini App</h3><p class="text-xs text-gray-400">Get a big reward!</p></div></div>
+                            <div class="flex items-center space-x-3"><span class="text-3xl">ðŸŽ®</span><div><h3 class="font-semibold">Play Mini App</h3><p class="text-xs text-gray-400">Get a big reward!</p></div></div>
                             <button class="bg-blue-500 text-white font-bold px-6 py-2 rounded-lg text-sm btn" onclick="claimReward('miniApp')">Play</button>
                         </div>
                     </div>
@@ -189,12 +189,14 @@
 
     <script type="module">
         const firebaseConfig = {
-            apiKey: "AIzaSyAjdPczpLlBINxzGQ1dvwDRlvZpdUCfKUk",
-            authDomain: "earningapp-c292c.firebaseapp.com",
-            projectId: "earningapp-c292c",
-            storageBucket: "earningapp-c292c.appspot.com",
-            messagingSenderId: "81626520266",
-            appId: "1:81626520266:web:af31f7d303477a3d973233"
+          apiKey: "AIzaSyDI5sQSiaX71auqXzZeVo_qAg_FKi6ZJLY",
+          authDomain: "my-app-a1e05.firebaseapp.com",
+          databaseURL: "https://my-app-a1e05-default-rtdb.firebaseio.com",
+          projectId: "my-app-a1e05",
+          storageBucket: "my-app-a1e05.firebasestorage.app",
+          messagingSenderId: "976679185393",
+          appId: "1:976679185393:web:4c55111b4668ff0e8ab250",
+          measurementId: "G-J0M1M6YBX7"
         };
         
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -298,7 +300,7 @@
             profileEmailEl.textContent = userData.email || 'No Email';
             referralCodeEl.textContent = userData.referralCode || '...';
             minWithdrawalInfoEl.textContent = `${appConfig.minWithdrawal || 5000} Coins`;
-            coinValueInfoEl.textContent = `${appConfig.coinValueCoins || 1000} Coins = ₹${appConfig.coinValueInr || 10}`;
+            coinValueInfoEl.textContent = `${appConfig.coinValueCoins || 1000} Coins = â‚¹${appConfig.coinValueInr || 10}`;
             withdrawMethodSelect.innerHTML = '';
             (appConfig.paymentMethods || []).forEach(method => {
                 const option = document.createElement('option');
@@ -540,7 +542,7 @@
                 document.execCommand('copy');
                 showAlert("Referral code copy ho gaya!");
             } catch (err) {
-                showAlert("Code copy karne mein विफल.");
+                showAlert("Code copy karne mein à¤µà¤¿à¤«à¤².");
             }
             document.body.removeChild(textArea);
         }
