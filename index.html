@@ -6,158 +6,6 @@
   <title>Smart Earn</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <!-- ✅ Firebase Modular SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, push } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
-
-    // 🔥 তোমার Firebase Config এখানে বসাও
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    let balance = 2.00;
-    let referCount = 0;
-
-    // Generate user referral code
-    const userId = tg.initDataUnsafe?.user?.id || Math.floor(Math.random() * 100000);
-    const myRefCode = "REF" + userId;
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("refCode").value = myRefCode;
-    });
-
-    const balanceEl = document.getElementById("balance");
-    const timerEl = document.getElementById("timer");
-    const adBox = document.getElementById("adBox");
-    const referBox = document.getElementById("referBox");
-    const withdrawBox = document.getElementById("withdrawBox");
-    const mainButtons = document.querySelectorAll("#startEarn, #referEarn, #withdraw");
-
-    // ✅ Firebase user data load
-    const userRef = ref(db, "users/" + userId);
-    onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        balance = data.balance || 2.00;
-        referCount = data.referCount || 0;
-        balanceEl.innerText = balance.toFixed(2);
-        document.getElementById("referCount").innerText = referCount;
-      }
-    });
-
-    function updateUserData() {
-      set(userRef, { balance, referCount });
-    }
-
-    function showMain() {
-      adBox.style.display = "none";
-      referBox.style.display = "none";
-      withdrawBox.style.display = "none";
-      mainButtons.forEach(btn => btn.style.display = "block");
-    }
-
-    // 🎯 Start Earn
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("startEarn").addEventListener("click", () => {
-        adBox.style.display = "block";
-        mainButtons.forEach(btn => btn.style.display = "none");
-
-        if (typeof show_9777736 === "function") show_9777736();
-
-        let time = 10;
-        timerEl.innerText = time;
-        const countdown = setInterval(() => {
-          time--;
-          timerEl.innerText = time;
-          if (time <= 0) {
-            clearInterval(countdown);
-            tg.showAlert("🎉 আপনি ৳0.50 আয় করেছেন!");
-            balance += 0.5;
-            balanceEl.innerText = balance.toFixed(2);
-            updateUserData();
-            showMain();
-          }
-        }, 1000);
-      });
-
-      // 👥 Refer Earn
-      document.getElementById("referEarn").addEventListener("click", () => {
-        referBox.style.display = "block";
-        withdrawBox.style.display = "none";
-        mainButtons.forEach(btn => btn.style.display = "none");
-      });
-
-      document.getElementById("copyBtn").addEventListener("click", () => {
-        navigator.clipboard.writeText(myRefCode);
-        tg.showAlert("✅ Refer code copied!");
-      });
-
-      document.getElementById("applyBtn").addEventListener("click", () => {
-        const inputCode = document.getElementById("applyCode").value.trim();
-        if (inputCode && inputCode !== myRefCode) {
-          tg.showAlert("🎁 আপনি রেফার কোড সফলভাবে ব্যবহার করেছেন!");
-          referCount++;
-          document.getElementById("referCount").innerText = referCount;
-          updateUserData();
-        } else {
-          tg.showAlert("❗ অবৈধ বা নিজের রেফার কোড!");
-        }
-      });
-
-      // 💰 Withdraw
-      document.getElementById("withdraw").addEventListener("click", () => {
-        withdrawBox.style.display = "block";
-        referBox.style.display = "none";
-        mainButtons.forEach(btn => btn.style.display = "none");
-      });
-
-      document.getElementById("confirmWithdraw").addEventListener("click", () => {
-        const amount = parseFloat(document.getElementById("amount").value);
-        const account = document.getElementById("account").value.trim();
-
-        if (amount < 10) {
-          tg.showAlert("❗ Minimum ৳10 needed!");
-          return;
-        }
-        if (!account) {
-          tg.showAlert("❗ Please enter account number!");
-          return;
-        }
-
-        const withdrawRef = push(ref(db, "withdraws"));
-        set(withdrawRef, {
-          userId,
-          method: document.getElementById("method").value,
-          amount,
-          account,
-          time: new Date().toISOString()
-        });
-
-        tg.showAlert("✅ Withdraw request sent successfully!");
-        showMain();
-      });
-
-      // 🔙 Back Buttons
-      document.getElementById("backFromAd").addEventListener("click", showMain);
-      document.getElementById("backFromRefer").addEventListener("click", showMain);
-      document.getElementById("backFromWithdraw").addEventListener("click", showMain);
-    });
-  </script>
-
-  <!-- 🎨 তোমার আগের ডিজাইন হুবহু একই -->
   <style>
     body {
       font-family: "Poppins", sans-serif;
@@ -236,7 +84,7 @@
 
   <div class="card">
     <h2>Smart Earn</h2>
-    <div class="balance">৳ <span id="balance">2.00</span></div>
+    <div class="balance">৳ <span id="balance">0.00</span></div>
     <div class="stats">
       <div>
         <p>Total Refer</p>
@@ -288,5 +136,173 @@
 
   <!-- Monetag Ad Script -->
   <script src='//libtl.com/sdk.js' data-zone='9777736' data-sdk='show_9777736'></script>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      set,
+      get,
+      update,
+      onValue,
+      push
+    } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+    // তোমার Firebase Config বসাও এখানে:
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // Get or create userId
+    const userId = tg.initDataUnsafe?.user?.id || "U" + Math.floor(Math.random() * 100000);
+    const userRef = ref(db, "users/" + userId);
+    const refCode = "REF" + userId;
+
+    // UI elements
+    const balanceEl = document.getElementById("balance");
+    const referEl = document.getElementById("referCount");
+    const withdrawEl = document.getElementById("withdrawCount");
+    const adBox = document.getElementById("adBox");
+    const referBox = document.getElementById("referBox");
+    const withdrawBox = document.getElementById("withdrawBox");
+    const timerEl = document.getElementById("timer");
+    const mainBtns = document.querySelectorAll("#startEarn, #referEarn, #withdraw");
+    document.getElementById("refCode").value = refCode;
+
+    let user = { balance: 0, referCount: 0, withdrawCount: 0 };
+    let settings = { adPayout: 0.5, referPayout: 1.0, minWithdraw: 10 };
+
+    // Load settings live
+    onValue(ref(db, "settings"), (snap) => {
+      if (snap.exists()) settings = snap.val();
+    });
+
+    // Load user live
+    onValue(userRef, (snap) => {
+      if (snap.exists()) user = snap.val();
+      balanceEl.innerText = (user.balance || 0).toFixed(2);
+      referEl.innerText = user.referCount || 0;
+      withdrawEl.innerText = "৳" + (user.withdrawCount || 0);
+    });
+
+    function showMain() {
+      adBox.style.display = "none";
+      referBox.style.display = "none";
+      withdrawBox.style.display = "none";
+      mainBtns.forEach(btn => btn.style.display = "block");
+    }
+
+    // Start Earn
+    document.getElementById("startEarn").addEventListener("click", async () => {
+      adBox.style.display = "block";
+      mainBtns.forEach(btn => btn.style.display = "none");
+      if (typeof show_9777736 === "function") show_9777736();
+      let time = 10;
+      timerEl.innerText = time;
+      const countdown = setInterval(async () => {
+        time--;
+        timerEl.innerText = time;
+        if (time <= 0) {
+          clearInterval(countdown);
+          const newBalance = (user.balance || 0) + parseFloat(settings.adPayout || 0.5);
+          await update(userRef, { balance: newBalance });
+          tg.showAlert(`🎉 আপনি ৳${settings.adPayout} আয় করেছেন!`);
+          showMain();
+        }
+      }, 1000);
+    });
+
+    // Refer Earn
+    document.getElementById("referEarn").addEventListener("click", () => {
+      referBox.style.display = "block";
+      mainBtns.forEach(btn => btn.style.display = "none");
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", () => {
+      navigator.clipboard.writeText(refCode);
+      tg.showAlert("✅ Refer code copied!");
+    });
+
+    document.getElementById("applyBtn").addEventListener("click", async () => {
+      const code = document.getElementById("applyCode").value.trim();
+      if (!code || code === refCode) return tg.showAlert("❗ অবৈধ বা নিজের রেফার কোড!");
+
+      const refUserId = code.replace("REF", "");
+      const refUserRef = ref(db, "users/" + refUserId);
+      const snap = await get(refUserRef);
+      if (!snap.exists()) return tg.showAlert("❗ রেফার কোড সঠিক নয়!");
+
+      // add bonus to referrer
+      const refUser = snap.val();
+      const bonus = parseFloat(settings.referPayout || 1.0);
+      const newBalance = (refUser.balance || 0) + bonus;
+      const newReferCount = (refUser.referCount || 0) + 1;
+      await update(refUserRef, { balance: newBalance, referCount: newReferCount });
+      tg.showAlert("🎁 রেফার কোড সফলভাবে ব্যবহার হয়েছে!");
+    });
+
+    // Withdraw
+    document.getElementById("withdraw").addEventListener("click", () => {
+      withdrawBox.style.display = "block";
+      mainBtns.forEach(btn => btn.style.display = "none");
+    });
+
+    document.getElementById("confirmWithdraw").addEventListener("click", async () => {
+      const method = document.getElementById("method").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const account = document.getElementById("account").value.trim();
+
+      if (isNaN(amount) || amount < settings.minWithdraw) {
+        return tg.showAlert(`❗ ন্যূনতম ৳${settings.minWithdraw} প্রয়োজন!`);
+      }
+      if (!account) return tg.showAlert("❗ একাউন্ট নাম্বার দিন!");
+
+      if (user.balance < amount) return tg.showAlert("❗ আপনার ব্যালেন্স যথেষ্ট নয়!");
+
+      const newWithdrawRef = push(ref(db, "withdraws"));
+      await set(newWithdrawRef, {
+        userId,
+        method,
+        amount,
+        account,
+        time: new Date().toISOString(),
+        status: "pending"
+      });
+
+      const newWithdrawCount = (user.withdrawCount || 0) + amount;
+      await update(userRef, { withdrawCount: newWithdrawCount });
+
+      tg.showAlert("✅ Withdraw request sent!");
+      showMain();
+    });
+
+    // Back buttons
+    document.getElementById("backFromAd").addEventListener("click", showMain);
+    document.getElementById("backFromRefer").addEventListener("click", showMain);
+    document.getElementById("backFromWithdraw").addEventListener("click", showMain);
+
+    // Ensure user exists
+    async function ensureUser() {
+      const snap = await get(userRef);
+      if (!snap.exists()) {
+        await set(userRef, { balance: 0, referCount: 0, withdrawCount: 0 });
+      }
+    }
+    ensureUser();
+  </script>
+
 </body>
 </html>
