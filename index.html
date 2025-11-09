@@ -34,9 +34,10 @@
   document.getElementById("user-name").innerText = userName;
   document.getElementById("user-photo").src = photoUrl;
 
-  const REWARD = 0.05;
-  const MIN_WITHDRAW = 100;
-  const REF_BONUS = 5;
+  const REWARD = 5;      // প্রতি অ্যাডের জন্য টাকা
+  const MIN_WITHDRAW = 2000; // মিনিমাম উইথড্রও
+  const REF_BONUS = 50;      // প্রতি রেফারের জন্য টাকা
+  const MIN_REF_FOR_WITHDRAW = 10; // উইথড্রের জন্য মিনিমাম রেফার
   let adTimer = null;
   const AD_DURATION = 15;
 
@@ -120,6 +121,8 @@
     if(isNaN(amount)||amount<MIN_WITHDRAW){ alert(`Minimum withdraw is ${MIN_WITHDRAW} BDT.`); return;}
     if(!account||account.length<6){ alert("Please enter a valid account number."); return;}
     if(amount>data.balance){ alert("You don't have enough balance."); return;}
+    if(data.refCount < MIN_REF_FOR_WITHDRAW){ alert(`You need at least ${MIN_REF_FOR_WITHDRAW} referrals to withdraw.`); return; }
+
     data.balance -= amount;
     data.totalWithdrawn = (data.totalWithdrawn || 0) + amount;
     await saveUserData(data);
@@ -187,7 +190,6 @@
 </script>
 
 <style>
-/* UI styling same as original */
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#4f46e5,#9333ea);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:40px 20px;color:#fff;}
 .container{width:100%;max-width:420px;display:flex;flex-direction:column;gap:20px;}
@@ -231,6 +233,8 @@ input,select{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:non
 </div>
 
 <div class="card" id="ad-section">
+<p>💰 প্রতি অ্যাড দেখার জন্য আপনি পাবেন ৫ টাকা।</p>
+<p>💰 প্রতি রেফারের জন্য আপনি পাবেন ৫০ টাকা।</p>
 <button class="btn" id="watchBtn" onclick="watchAd()">🎬 Watch Ad</button>
 <p id="countdown"></p>
 </div>
@@ -248,7 +252,7 @@ input,select{width:100%;padding:12px;margin:10px 0;border-radius:10px;border:non
 </select>
 <input type="number" id="balanceAmount" placeholder="Enter Amount" oninput="calculateBDT()">
 <p id="bdtValue">You will get: 0 BDT</p>
-<p style="color:#ffeb3b;font-size:13px;">⚠️ Minimum Withdraw: 100 BDT</p>
+<p style="color:#ffeb3b;font-size:13px;">⚠️ Minimum Withdraw: 2000 BDT &amp; Minimum 10 Referrals Required</p>
 <input type="text" id="accountNumber" placeholder="Enter your account number">
 <button class="btn" onclick="submitWithdraw()">Submit</button>
 <button class="btn back-btn" onclick="goBack()">🔙 Back</button>
