@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; font-family: 'Montserrat', sans-serif; overflow: hidden; }
+        html, body { height: 100%; font-family: 'Montserrat', sans-serif; }
 
         /* Moving gradient background */
         body {
@@ -15,6 +15,7 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: #00ffff;
+            overflow: hidden;
         }
 
         @keyframes gradientBG {
@@ -24,21 +25,24 @@
         }
 
         /* Particle container */
-        #particles-js { position: absolute; width: 100%; height: 100%; z-index: 0; }
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: 0; }
 
         /* Centered content */
         .content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
+            position: relative;
             z-index: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
         }
 
         /* Neon glowing text */
         h1 {
-            font-size: 5rem;
+            font-size: 4rem;
             text-transform: uppercase;
             letter-spacing: 5px;
             color: #00ffff;
@@ -62,9 +66,10 @@
             overflow: hidden;
             border-right: .15em solid #00ffff;
             white-space: nowrap;
-            margin: 20px auto;
             letter-spacing: 2px;
             animation: typing 4s steps(40, end) infinite, blink-caret 0.75s step-end infinite;
+            max-width: 90%;
+            margin-top: 20px;
         }
 
         @keyframes typing {
@@ -98,6 +103,19 @@
             box-shadow: 0 0 20px #ff69b4, 0 0 40px #ff69b4;
             transform: scale(1.1);
         }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .typing { font-size: 1.2rem; }
+            .btn { padding: 10px 25px; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.2rem; }
+            .typing { font-size: 1rem; }
+            .btn { padding: 8px 20px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
@@ -114,12 +132,12 @@
     <script>
         particlesJS('particles-js', {
             particles: {
-                number: { value: 100, density: { enable: true, value_area: 800 } },
+                number: { value: 80, density: { enable: true, value_area: 800 } },
                 color: { value: ['#00ffff','#ff69b4','#ffffff'] },
                 shape: { type: 'circle' },
                 opacity: { value: 0.7, random: true },
                 size: { value: 3, random: true },
-                line_linked: { enable: true, distance: 150, color: '#00ffff', opacity: 0.3, width: 1 },
+                line_linked: { enable: true, distance: 120, color: '#00ffff', opacity: 0.3, width: 1 },
                 move: { enable: true, speed: 2, direction: 'none', random: true, straight: false, out_mode: 'out' }
             },
             interactivity: {
@@ -129,7 +147,7 @@
                     onclick: { enable: true, mode: 'push' },
                     resize: true
                 },
-                modes: { repulse: { distance: 120 }, push: { particles_nb: 4 } }
+                modes: { repulse: { distance: 100 }, push: { particles_nb: 4 } }
             },
             retina_detect: true
         });
