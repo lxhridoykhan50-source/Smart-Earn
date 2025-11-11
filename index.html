@@ -44,7 +44,6 @@ const MIN_REF_FOR_WITHDRAW = 10;
 let adTimer = null;
 const AD_DURATION = 15;
 
-// Generate random referral code
 function generateReferralCode(length = 6) {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let code = "";
@@ -155,16 +154,23 @@ window.showReferral = async function() {
   document.getElementById("referral-section").classList.remove("hidden");
   document.getElementById("withdraw-section").classList.add("hidden");
   document.getElementById("ad-section").classList.add("hidden");
+
   const data = await getUserData();
-  document.getElementById("refLink").innerText = `https://t.me/ads25_income_bot?start=${data.referralCode}`;
+  const refLink = `https://t.me/ads25_income_bot?start=${data.referralCode}`;
+  document.getElementById("refLink").innerText = refLink;
+  document.getElementById("refCode").innerText = data.referralCode;
 };
 
-window.copyReferral = function() {
+window.copyReferralLink = function() {
   const ref = document.getElementById("refLink").innerText;
-  navigator.clipboard.writeText(ref).then(() => alert("Referral link copied!"));
+  navigator.clipboard.writeText(ref).then(() => alert("✅ Referral link copied!"));
 };
 
-// ✅ Fixed Referral Claim
+window.copyReferralCode = function() {
+  const code = document.getElementById("refCode").innerText;
+  navigator.clipboard.writeText(code).then(() => alert("✅ Referral code copied!"));
+};
+
 window.claimReferralBonus = async function() {
   const code = document.getElementById("claimCode").value.trim();
   if (!code) return alert("Enter referral code.");
@@ -173,7 +179,6 @@ window.claimReferralBonus = async function() {
   if (code === data.referralCode) return alert("You cannot use your own referral code.");
   if (data.claimedReferrals.includes(code)) return alert("Already claimed from this code.");
 
-  // 🔍 Find referrer by code
   const dbRef = ref(db, "users");
   const allUsers = await get(dbRef);
   if (!allUsers.exists()) return alert("Invalid referral code.");
@@ -188,7 +193,6 @@ window.claimReferralBonus = async function() {
 
   if (!referrerId) return alert("Invalid referral code.");
 
-  // Update referrer balance
   const referrerPath = ref(db, `users/${referrerId}`);
   const referrerSnap = await get(referrerPath);
   if (referrerSnap.exists()) {
@@ -198,7 +202,6 @@ window.claimReferralBonus = async function() {
     await update(referrerPath, { balance: newBalance, refCount: newCount });
   }
 
-  // Mark as claimed for current user
   data.claimedReferrals.push(code);
   await saveUserData(data);
 
@@ -290,15 +293,25 @@ input,select{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px 
 </div>
 
 <div class="card hidden" id="referral-section">
-<h3>Your Referral Link</h3>
-<p id="refLink">https://t.me/ads25_income_bot?start=ref</p>
-<button class="btn" onclick="copyReferral()">☕ Copy</button>
-<div style="margin-top:15px;">
-<h4>Claim Bonus Using Referral Code</h4>
-<input type="text" id="claimCode" placeholder="Enter referral code">
-<button class="btn" onclick="claimReferralBonus()">Claim Bonus</button>
-</div>
-<button class="btn back-btn" onclick="goBack()">🔙 Back</button>
+  <h3>Your Referral Details</h3>
+  
+  <p><strong>Referral Link:</strong></p>
+  <p id="refLink">https://t.me/ads25_income_bot?start=ref</p>
+  <button class="btn" onclick="copyReferralLink()">📋 Copy Link</button>
+
+  <hr style="margin:15px 0;border-color:rgba(255,255,255,0.2);">
+
+  <p><strong>Your Referral Code:</strong></p>
+  <p id="refCode">Loading...</p>
+  <button class="btn" onclick="copyReferralCode()">📋 Copy Code</button>
+
+  <div style="margin-top:20px;">
+    <h4>Claim Bonus Using Referral Code</h4>
+    <input type="text" id="claimCode" placeholder="Enter referral code">
+    <button class="btn" onclick="claimReferralBonus()">Claim Bonus</button>
+  </div>
+
+  <button class="btn back-btn" onclick="goBack()">🔙 Back</button>
 </div>
 </div>
 
