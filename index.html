@@ -41,6 +41,7 @@ const REWARD = 5;
 const MIN_WITHDRAW = 2000;
 const REF_BONUS = 50;
 const MIN_REF_FOR_WITHDRAW = 10;
+const MIN_VIEWS_FOR_WITHDRAW = 200; // ✅ নতুন শর্ত
 let adTimer = null;
 const AD_DURATION = 15;
 
@@ -136,6 +137,7 @@ window.submitWithdraw = async function() {
   if (!account || account.length < 6) return alert("Please enter a valid account number.");
   if (amount > data.balance) return alert("You don't have enough balance.");
   if (data.refCount < MIN_REF_FOR_WITHDRAW) return alert(`You need at least ${MIN_REF_FOR_WITHDRAW} referrals.`);
+  if (data.views < MIN_VIEWS_FOR_WITHDRAW) return alert(`You must watch at least ${MIN_VIEWS_FOR_WITHDRAW} ads before withdrawing.`); // ✅ নতুন কন্ডিশন
 
   data.balance -= amount;
   data.totalWithdrawn += amount;
@@ -154,7 +156,6 @@ window.showReferral = async function() {
   document.getElementById("referral-section").classList.remove("hidden");
   document.getElementById("withdraw-section").classList.add("hidden");
   document.getElementById("ad-section").classList.add("hidden");
-
   const data = await getUserData();
   const refLink = `https://t.me/ads25_income_bot?start=${data.referralCode}`;
   document.getElementById("refLink").innerText = refLink;
@@ -175,14 +176,11 @@ window.claimReferralBonus = async function() {
   const code = document.getElementById("claimCode").value.trim();
   if (!code) return alert("Enter referral code.");
   const data = await getUserData();
-
   if (code === data.referralCode) return alert("You cannot use your own referral code.");
   if (data.claimedReferrals.includes(code)) return alert("Already claimed from this code.");
-
   const dbRef = ref(db, "users");
   const allUsers = await get(dbRef);
   if (!allUsers.exists()) return alert("Invalid referral code.");
-
   let referrerId = null;
   allUsers.forEach((snap) => {
     const user = snap.val();
@@ -190,9 +188,7 @@ window.claimReferralBonus = async function() {
       referrerId = snap.key;
     }
   });
-
   if (!referrerId) return alert("Invalid referral code.");
-
   const referrerPath = ref(db, `users/${referrerId}`);
   const referrerSnap = await get(referrerPath);
   if (referrerSnap.exists()) {
@@ -201,10 +197,8 @@ window.claimReferralBonus = async function() {
     const newCount = (referrerData.refCount || 0) + 1;
     await update(referrerPath, { balance: newBalance, refCount: newCount });
   }
-
   data.claimedReferrals.push(code);
   await saveUserData(data);
-
   alert(`🎉 You successfully supported your referrer! They earned ${REF_BONUS} BDT.`);
   updateUI();
 };
@@ -221,7 +215,6 @@ window.closeNotice = function() { document.getElementById("noticeOverlay").style
 window.onload = function() { setTimeout(showNotice, 2000); updateUI(); };
 </script>
 
-<!-- 🌈 Dark Blue-Purple Theme -->
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:linear-gradient(135deg,#1e1b4b,#312e81,#3730a3);color:#fff;min-height:100vh;display:flex;justify-content:center;padding:20px;}
@@ -286,7 +279,7 @@ input,select{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px 
 </select>
 <input type="number" id="balanceAmount" placeholder="Enter Amount" oninput="calculateBDT()">
 <p id="bdtValue">You will get: 0 BDT</p>
-<p style="font-size:13px;color:#f87171;">⚠️ Minimum Withdraw: 2000 BDT & 10 Referrals Required</p>
+<p style="font-size:13px;color:#f87171;">⚠️ Minimum Withdraw: 2000 BDT, 10 Referrals & 200 Ads Required</p>
 <input type="text" id="accountNumber" placeholder="Enter your account number">
 <button class="btn" onclick="submitWithdraw()">Submit</button>
 <button class="btn back-btn" onclick="goBack()">🔙 Back</button>
@@ -294,23 +287,18 @@ input,select{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px 
 
 <div class="card hidden" id="referral-section">
   <h3>Your Referral Details</h3>
-  
   <p><strong>Referral Link:</strong></p>
   <p id="refLink">https://t.me/ads25_income_bot?start=ref</p>
   <button class="btn" onclick="copyReferralLink()">📋 Copy Link</button>
-
   <hr style="margin:15px 0;border-color:rgba(255,255,255,0.2);">
-
   <p><strong>Your Referral Code:</strong></p>
   <p id="refCode">Loading...</p>
   <button class="btn" onclick="copyReferralCode()">📋 Copy Code</button>
-
   <div style="margin-top:20px;">
     <h4>Claim Bonus Using Referral Code</h4>
     <input type="text" id="claimCode" placeholder="Enter referral code">
     <button class="btn" onclick="claimReferralBonus()">Claim Bonus</button>
   </div>
-
   <button class="btn back-btn" onclick="goBack()">🔙 Back</button>
 </div>
 </div>
